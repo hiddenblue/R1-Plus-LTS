@@ -132,6 +132,7 @@ jobs:
       id: clone
       run: |
         git clone $SOURCE_URL -b $SOURCE_BRANCH $OPENWRT_ROOT_PATH
+        git clone https://github.com/gdy666/luci-app-lucky.git $OPENWRT_ROOT_PATH/immortalwrt/package/lucky
 
     - name: Generate Config File
       if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
@@ -324,20 +325,7 @@ jobs:
         delete_tag_pattern: Immortalwrt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-        
-    - name: send telegram message on push
-      uses: appleboy/telegram-action@master
-      if: steps.organize.outputs.status == 'success' && !cancelled()
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }} 
-        format: markdown
-        message: |
-            *#${{env.RUN_NUMBER}}号)相对高大全顺利编译完成了*
-            [仓库：${{ github.repository }}](https://github.com/${{ github.repository }}/)
-            
-            [下载地址: ${{ steps.tag.outputs.release_tag }}](https://github.com/${{ github.repository }}/releases/tag/${{ steps.tag.outputs.release_tag }})          
-       
+         
     - name: Print Disk Usage Information
       if: always()
       run: |
